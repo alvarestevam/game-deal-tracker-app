@@ -23,15 +23,17 @@ class GameDeal {
 
   factory GameDeal.fromJson(Map<String, dynamic> json) {
     return GameDeal(
-      id: json['id'].toString(),
+      id: json['id']?.toString() ?? '', // Usa vazio se id faltar
       title: json['title'] as String,
-      currentPrice: json['current_price'].toString(),
-      historicalLow: json['historical_low'].toString(),
-      originalPrice: json['original_price']?.toString(),
+      currentPrice: json['current_price']?.toString() ?? '0.0',
+      historicalLow: json['historical_low']?.toString() ?? '0.0',
+      originalPrice: json['original_price']?.toString(), // Permanece null se faltar
       platform: json['platform'] as String?,
-      isFree: json['is_free'] as bool,
+      isFree: json['is_free'] as bool? ?? false, // Default false se faltar
       isHistoricalLow: json['is_historical_low'] as bool? ?? false,
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : DateTime.now(), // Usa data atual se faltar
     );
   }
 
