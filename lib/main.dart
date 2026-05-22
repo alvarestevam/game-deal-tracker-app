@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/game_provider.dart';
 import 'views/giveaways_view.dart';
 import 'views/deals_view.dart';
 import 'views/audit_view.dart';
 
 void main() {
-  runApp(const GameDealTrackerApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => GameProvider()
+            ..fetchGiveaways()
+            ..fetchDeals(),
+        ),
+      ],
+      child: const GameDealTrackerApp(),
+    ),
+  );
 }
 
 class GameDealTrackerApp extends StatelessWidget {
