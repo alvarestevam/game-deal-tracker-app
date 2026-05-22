@@ -1,5 +1,5 @@
 class GameDeal {
-  final int id;
+  final String id;
   final String title;
   final String currentPrice;
   final String historicalLow;
@@ -23,7 +23,7 @@ class GameDeal {
 
   factory GameDeal.fromJson(Map<String, dynamic> json) {
     return GameDeal(
-      id: json['id'] as int,
+      id: json['id'].toString(),
       title: json['title'] as String,
       currentPrice: json['current_price'].toString(),
       historicalLow: json['historical_low'].toString(),
