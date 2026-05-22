@@ -11,7 +11,7 @@ class ApiService {
 
   Future<List<GameDeal>> getGiveaways() async {
     try {
-      final response = await _dio.get('/giveaways');
+      final response = await _dio.get('/api/v1/giveaways');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         return data.map((json) => GameDeal.fromJson(json)).toList();
@@ -28,7 +28,7 @@ class ApiService {
 
   Future<List<GameDeal>> getDeals() async {
     try {
-      final response = await _dio.get('/deals');
+      final response = await _dio.get('/api/v1/deals');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         return data.map((json) => GameDeal.fromJson(json)).toList();
@@ -46,7 +46,7 @@ class ApiService {
   Future<GameDeal?> auditGame(String title) async {
     try {
       final encodedTitle = Uri.encodeComponent(title);
-      final response = await _dio.get('/games/$encodedTitle/audit');
+      final response = await _dio.get('/api/v1/games/$encodedTitle/audit');
       if (response.statusCode == 200) {
         return GameDeal.fromJson(response.data);
       }
