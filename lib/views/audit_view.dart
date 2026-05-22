@@ -1,14 +1,149 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/game_provider.dart';
 
-class AuditView extends StatelessWidget {
+class AuditView extends StatefulWidget {
   const AuditView({super.key});
 
   @override
+  State<AuditView> createState() => _AuditViewState();
+}
+
+class _AuditViewState extends State<AuditView> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Auditoria'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Auditoria de Preços'),
       ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                labelText: 'Nome do Jogo',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+              onSubmitted: (_) => _performAudit(),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _performAudit,
+                child: const Text('Auditar Preço'),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Expanded(
+              child: AuditResultView(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _performAudit() async {
+    final title = _searchController.text.trim();
+    if (title.isEmpty) return;
+
+    final provider = Provider.of<GameProvider>(context, listen: false);
+    final success = await provider.auditGame(title);
+
+    if (success) {
+      _searchController.clear();
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Jogo não encontrado ou erro de conexão')),
+      );
+    }
+  }
+}
+
+class AuditResultView extends StatelessWidget {
+  const AuditResultView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GameProvider>(
+      builder: (context, provider, child) {
+        if (provider.isAuditing) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final game = provider.auditedGame;
+        if (game == null) {
+          return const Center(
+            child: Text('Pesquise um jogo para auditar seu preço.'),
+          );
+        }
+
+        return SingleChildScrollView(
+          child: Card(
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    game.title,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Text('Preço Atual: ',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(game.isFree ? 'GRÁTIS' : 'R\$ ${game.currentPrice}'),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Text('Menor Preço Histórico: ',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('R\$ ${game.historicalLow}'),
+                    ],
+                  ),
+                  if (game.isHistoricalLow) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        'MENOR PREÇO HISTÓRICO!',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

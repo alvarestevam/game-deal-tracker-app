@@ -6,6 +6,7 @@ class GameDeal {
   final String? originalPrice;
   final String? platform;
   final bool isFree;
+  final bool isHistoricalLow;
   final DateTime updatedAt;
 
   GameDeal({
@@ -16,6 +17,7 @@ class GameDeal {
     this.originalPrice,
     this.platform,
     required this.isFree,
+    required this.isHistoricalLow,
     required this.updatedAt,
   });
 
@@ -28,6 +30,7 @@ class GameDeal {
       originalPrice: json['original_price']?.toString(),
       platform: json['platform'] as String?,
       isFree: json['is_free'] as bool,
+      isHistoricalLow: json['is_historical_low'] as bool? ?? false,
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }
