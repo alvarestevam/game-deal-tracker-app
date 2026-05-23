@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/game_deal.dart';
 
 class GameCard extends StatelessWidget {
@@ -100,6 +101,11 @@ class GameCard extends StatelessWidget {
                     color: Colors.grey,
                   ),
                 ),
+                if (game.dealUrl != null)
+                  ElevatedButton(
+                    onPressed: () => launchUrl(Uri.parse(game.dealUrl!)),
+                    child: Text(game.storeName ?? "Ver Oferta"),
+                  ),
               ],
             ),
           ],
