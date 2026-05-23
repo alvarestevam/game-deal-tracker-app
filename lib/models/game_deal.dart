@@ -5,6 +5,8 @@ class GameDeal {
   final String historicalLow;
   final String? originalPrice;
   final String? platform;
+  final String? storeName;
+  final String? dealUrl;
   final bool isFree;
   final bool isHistoricalLow;
   final DateTime updatedAt;
@@ -16,6 +18,8 @@ class GameDeal {
     required this.historicalLow,
     this.originalPrice,
     this.platform,
+    this.storeName,
+    this.dealUrl,
     required this.isFree,
     required this.isHistoricalLow,
     required this.updatedAt,
@@ -29,6 +33,8 @@ class GameDeal {
       historicalLow: json['historical_low']?.toString() ?? '0.0',
       originalPrice: json['original_price']?.toString(), // Permanece null se faltar
       platform: json['platform'] as String?,
+      storeName: json['store_name']?.toString(),
+      dealUrl: json['deal_url']?.toString(),
       isFree: json['is_free'] as bool? ?? false, // Default false se faltar
       isHistoricalLow: json['is_historical_low'] as bool? ?? false,
       updatedAt: json['updated_at'] != null
