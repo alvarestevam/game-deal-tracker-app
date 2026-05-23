@@ -95,17 +95,27 @@ class GameCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Atualizado em: ${_formatDate(game.updatedAt)}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.grey,
+                Expanded(
+                  child: Text(
+                    'Atualizado em: ${_formatDate(game.updatedAt)}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
-                if (game.dealUrl != null)
-                  ElevatedButton(
-                    onPressed: () => launchUrl(Uri.parse(game.dealUrl!)),
-                    child: Text(game.storeName ?? "Ver Oferta"),
+                if (game.dealUrl != null) ...[
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: ElevatedButton(
+                      onPressed: () => launchUrl(Uri.parse(game.dealUrl!)),
+                      child: Text(
+                        game.displayStoreName,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
                   ),
+                ],
               ],
             ),
           ],
