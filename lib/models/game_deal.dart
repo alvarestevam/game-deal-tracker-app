@@ -56,4 +56,13 @@ class GameDeal {
 
     return null;
   }
+
+  String get displayStoreName {
+    if (storeName == null ||
+        storeName!.isEmpty ||
+        RegExp(r'^\d+$').hasMatch(storeName!)) {
+      return "Ver Oferta";
+    }
+    return storeName!;
+  }
 }
