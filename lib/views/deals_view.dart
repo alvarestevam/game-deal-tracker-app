@@ -23,7 +23,15 @@ class DealsView extends StatelessWidget {
           final sortedDeals = List.from(provider.deals)
             ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
-          final recentDeals = sortedDeals.take(10).toList();
+          final recentDeals = List.from(provider.deals)
+            ..sort((a, b) {
+              if (a.promoStartDate == null && b.promoStartDate == null) return 0;
+              if (a.promoStartDate == null) return 1;
+              if (b.promoStartDate == null) return -1;
+              return b.promoStartDate!.compareTo(a.promoStartDate!);
+            });
+
+          final topRecentDeals = recentDeals.take(10).toList();
 
           return RefreshIndicator(
             onRefresh: () => provider.fetchDeals(),
@@ -59,11 +67,11 @@ class DealsView extends StatelessWidget {
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 8),
-                            itemCount: recentDeals.length,
+                            itemCount: topRecentDeals.length,
                             itemBuilder: (context, index) {
                               return SizedBox(
                                 width: 340,
-                                child: GameCard(game: recentDeals[index]),
+                                child: GameCard(game: topRecentDeals[index]),
                               );
                             },
                           ),

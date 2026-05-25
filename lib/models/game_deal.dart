@@ -10,6 +10,8 @@ class GameDeal {
   final bool isFree;
   final bool isHistoricalLow;
   final DateTime updatedAt;
+  final DateTime? promoStartDate;
+  final DateTime? promoEndDate;
 
   GameDeal({
     required this.id,
@@ -23,6 +25,8 @@ class GameDeal {
     required this.isFree,
     required this.isHistoricalLow,
     required this.updatedAt,
+    this.promoStartDate,
+    this.promoEndDate,
   });
 
   factory GameDeal.fromJson(Map<String, dynamic> json) {
@@ -40,6 +44,12 @@ class GameDeal {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
           : DateTime.now(), // Usa data atual se faltar
+      promoStartDate: json['promo_start_date'] != null
+          ? DateTime.tryParse(json['promo_start_date'].toString())
+          : null,
+      promoEndDate: json['promo_end_date'] != null
+          ? DateTime.tryParse(json['promo_end_date'].toString())
+          : null,
     );
   }
 
