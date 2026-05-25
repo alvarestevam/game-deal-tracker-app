@@ -105,6 +105,27 @@ class AuditResultView extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                   ),
+                  if (game.promoEndDate != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        'Termina em: ${_formatDayMonth(game.promoEndDate!)}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.orangeAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    )
+                  else if (game.promoStartDate != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        'Começou em: ${_formatDayMonth(game.promoStartDate!)}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey,
+                            ),
+                      ),
+                    ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -160,5 +181,9 @@ class AuditResultView extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _formatDayMonth(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}';
   }
 }
