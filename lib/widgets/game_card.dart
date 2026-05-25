@@ -47,6 +47,27 @@ class GameCard extends StatelessWidget {
                             ),
                           ),
                         ),
+                      if (game.promoEndDate != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            'Termina em: ${_formatDayMonth(game.promoEndDate!)}',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.orangeAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )
+                      else if (game.promoStartDate != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            'Começou em: ${_formatDayMonth(game.promoStartDate!)}',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -126,5 +147,9 @@ class GameCard extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
+
+  String _formatDayMonth(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}';
   }
 }
