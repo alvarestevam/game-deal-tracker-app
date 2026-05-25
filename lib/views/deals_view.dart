@@ -20,9 +20,14 @@ class DealsView extends StatelessWidget {
             );
           }
 
+          final sortedDeals = List.from(provider.deals)
+            ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+          final recentDeals = sortedDeals.take(10).toList();
+
           return RefreshIndicator(
             onRefresh: () => provider.fetchDeals(),
-            child: provider.deals.isEmpty
+            child: sortedDeals.isEmpty
                 ? ListView(
                     children: const [
                       SizedBox(height: 100),
@@ -34,13 +39,57 @@ class DealsView extends StatelessWidget {
                       ),
                     ],
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.only(top: 8, bottom: 16),
-                    itemCount: provider.deals.length,
-                    itemBuilder: (context, index) {
-                      final game = provider.deals[index];
-                      return GameCard(game: game);
-                    },
+                : SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                          child: Text(
+                            'Ofertas Recentes',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 190,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            itemCount: recentDeals.length,
+                            itemBuilder: (context, index) {
+                              return SizedBox(
+                                width: 340,
+                                child: GameCard(game: recentDeals[index]),
+                              );
+                            },
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                          child: Text(
+                            'Todas as Ofertas',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(bottom: 16),
+                          itemCount: sortedDeals.length,
+                          itemBuilder: (context, index) {
+                            final game = sortedDeals[index];
+                            return GameCard(game: game);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
           );
         },
