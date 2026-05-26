@@ -84,100 +84,105 @@ class AuditResultView extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final game = provider.auditedGame;
-        if (game == null) {
+        final games = provider.games;
+        if (games.isEmpty) {
           return const Center(
-            child: Text('Pesquise um jogo para auditar seu preço.'),
+            child: Text('Nenhum jogo encontrado'),
           );
         }
 
-        return SingleChildScrollView(
-          child: Card(
-            elevation: 4,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    game.title,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  if (game.promoEndDate != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        'Termina em: ${_formatDayMonth(game.promoEndDate!)}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.orangeAccent,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    )
-                  else if (game.promoStartDate != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        'Começou em: ${_formatDayMonth(game.promoStartDate!)}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey,
-                            ),
-                      ),
+        return ListView.separated(
+          itemCount: games.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final game = games[index];
+            return Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      game.title,
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      const Text('Preço Atual: ',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text(game.isFree ? 'GRÁTIS' : 'R\$ ${game.currentPrice}'),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Text('Menor Preço Histórico: ',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('R\$ ${game.historicalLow}'),
-                    ],
-                  ),
-                  if (game.isHistoricalLow) ...[
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Text(
-                        'MENOR PREÇO HISTÓRICO!',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                  if (game.dealUrl != null) ...[
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => launchUrl(Uri.parse(game.dealUrl!)),
+                    if (game.promoEndDate != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
                         child: Text(
-                          game.displayStoreName,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                          'Termina em: ${_formatDayMonth(game.promoEndDate!)}',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.orangeAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      )
+                    else if (game.promoStartDate != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          'Começou em: ${_formatDayMonth(game.promoStartDate!)}',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.grey,
+                              ),
                         ),
                       ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        const Text('Preço Atual: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(game.isFree ? 'GRÁTIS' : 'R\$ ${game.currentPrice}'),
+                      ],
                     ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Text('Menor Preço Histórico: ',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('R\$ ${game.historicalLow}'),
+                      ],
+                    ),
+                    if (game.isHistoricalLow) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          'MENOR PREÇO HISTÓRICO!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (game.dealUrl != null) ...[
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => launchUrl(Uri.parse(game.dealUrl!)),
+                          child: Text(
+                            game.displayStoreName,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

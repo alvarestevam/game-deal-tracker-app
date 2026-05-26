@@ -47,20 +47,21 @@ class ApiService {
     }
   }
 
-  Future<GameDeal?> auditGame(String title) async {
+  Future<List<GameAuditResponse>> auditGame(String title) async {
     try {
       final encodedTitle = Uri.encodeComponent(title);
       final response = await _dio.get('/api/v1/games/$encodedTitle/audit');
       if (response.statusCode == 200) {
-        return GameDeal.fromJson(response.data);
+        final List<dynamic> data = response.data;
+        return data.map((json) => GameAuditResponse.fromJson(json)).toList();
       }
-      return null;
+      return [];
     } on DioException catch (e) {
       print('Erro na auditoria: ${e.message}');
-      return null;
+      return [];
     } catch (e) {
       print('Erro inesperado: $e');
-      return null;
+      return [];
     }
   }
 }

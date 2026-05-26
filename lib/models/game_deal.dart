@@ -1,3 +1,5 @@
+typedef GameAuditResponse = GameDeal;
+
 class GameDeal {
   final String id;
   final String title;
