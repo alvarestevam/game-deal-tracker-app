@@ -6,7 +6,7 @@ void main() {
     test('Initial state is correct', () {
       final provider = GameProvider();
       expect(provider.isAuditing, false);
-      expect(provider.auditedGame, null);
+      expect(provider.games, isEmpty);
     });
   });
 }

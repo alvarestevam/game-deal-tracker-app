@@ -11,7 +11,7 @@ class GameProvider extends ChangeNotifier {
   bool _isLoadingDeals = false;
 
   // Auditoria
-  GameDeal? _auditedGame;
+  List<GameAuditResponse> _games = [];
   bool _isAuditing = false;
 
   List<GameDeal> get giveaways => _giveaways;
@@ -19,7 +19,7 @@ class GameProvider extends ChangeNotifier {
   bool get isLoadingGiveaways => _isLoadingGiveaways;
   bool get isLoadingDeals => _isLoadingDeals;
 
-  GameDeal? get auditedGame => _auditedGame;
+  List<GameAuditResponse> get games => _games;
   bool get isAuditing => _isAuditing;
 
   Future<void> fetchGiveaways() async {
@@ -48,13 +48,13 @@ class GameProvider extends ChangeNotifier {
 
   Future<bool> auditGame(String title) async {
     _isAuditing = true;
-    _auditedGame = null;
+    _games = [];
     notifyListeners();
 
     try {
-      final result = await _apiService.auditGame(title);
-      _auditedGame = result;
-      return result != null;
+      final results = await _apiService.auditGame(title);
+      _games = results;
+      return results.isNotEmpty;
     } finally {
       _isAuditing = false;
       notifyListeners();
