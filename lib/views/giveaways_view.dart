@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
 import '../widgets/game_card.dart';
+import '../widgets/game_card_skeleton.dart';
 
 class GiveawaysView extends StatelessWidget {
   const GiveawaysView({super.key});
@@ -15,8 +16,9 @@ class GiveawaysView extends StatelessWidget {
       body: Consumer<GameProvider>(
         builder: (context, provider, child) {
           if (provider.isLoadingGiveaways && provider.giveaways.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) => const GameCardSkeleton(),
             );
           }
 

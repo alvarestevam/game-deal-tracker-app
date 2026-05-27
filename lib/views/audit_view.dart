@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/game_provider.dart';
+import '../widgets/game_card_skeleton.dart';
 
 class AuditView extends StatefulWidget {
   const AuditView({super.key});
@@ -81,7 +83,10 @@ class AuditResultView extends StatelessWidget {
     return Consumer<GameProvider>(
       builder: (context, provider, child) {
         if (provider.isAuditing) {
-          return const Center(child: CircularProgressIndicator());
+          return ListView.builder(
+            itemCount: 3,
+            itemBuilder: (context, index) => const GameCardSkeleton(),
+          );
         }
 
         final games = provider.games;
@@ -103,6 +108,31 @@ class AuditResultView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (game.imageUrl != null && game.imageUrl!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: CachedNetworkImage(
+                            imageUrl: game.imageUrl!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              height: 200,
+                              color: Colors.grey[800],
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              height: 200,
+                              color: Colors.grey[800],
+                              child: const Icon(Icons.broken_image, size: 50),
+                            ),
+                          ),
+                        ),
+                      ),
                     Text(
                       game.title,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
