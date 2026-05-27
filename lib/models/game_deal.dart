@@ -14,6 +14,7 @@ class GameDeal {
   final DateTime updatedAt;
   final DateTime? promoStartDate;
   final DateTime? promoEndDate;
+  final String? imageUrl;
 
   GameDeal({
     required this.id,
@@ -29,6 +30,7 @@ class GameDeal {
     required this.updatedAt,
     this.promoStartDate,
     this.promoEndDate,
+    this.imageUrl,
   });
 
   factory GameDeal.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class GameDeal {
       promoEndDate: json['promo_end_date'] != null
           ? DateTime.tryParse(json['promo_end_date'].toString())
           : null,
+      imageUrl: json['image_url']?.toString(),
     );
   }
 

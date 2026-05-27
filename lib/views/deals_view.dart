@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
 import '../widgets/game_card.dart';
+import '../widgets/game_card_skeleton.dart';
 
 class DealsView extends StatelessWidget {
   const DealsView({super.key});
@@ -15,8 +16,9 @@ class DealsView extends StatelessWidget {
       body: Consumer<GameProvider>(
         builder: (context, provider, child) {
           if (provider.isLoadingDeals && provider.deals.isEmpty) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) => const GameCardSkeleton(),
             );
           }
 
@@ -63,7 +65,7 @@ class DealsView extends StatelessWidget {
                           ),
                         ),
                         SizedBox(
-                          height: 190,
+                          height: 350,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 8),
