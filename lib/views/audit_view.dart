@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/game_provider.dart';
+import '../models/game_deal.dart';
 import '../widgets/game_card_skeleton.dart';
 
 class AuditView extends StatefulWidget {
@@ -160,54 +161,8 @@ class AuditResultView extends StatelessWidget {
                               ),
                         ),
                       ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        const Text('Preço Atual: ',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text(game.isFree ? 'GRÁTIS' : 'R\$ ${game.currentPrice}'),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Text('Menor Preço Histórico: ',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('R\$ ${game.historicalLow}'),
-                      ],
-                    ),
-                    if (game.isHistoricalLow) ...[
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'MENOR PREÇO HISTÓRICO!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                    if (game.dealUrl != null) ...[
-                      const SizedBox(height: 24),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => launchUrl(Uri.parse(game.dealUrl!)),
-                          child: Text(
-                            game.displayStoreName,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ),
-                      ),
-                    ],
+                    const Divider(height: 32),
+                    ...game.offers.map((offer) => _buildAuditOfferRow(context, offer)),
                   ],
                 ),
               ),
@@ -215,6 +170,82 @@ class AuditResultView extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildAuditOfferRow(BuildContext context, GameOffer offer) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (offer.storeIconUrl != null)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: CachedNetworkImage(
+                    imageUrl: offer.storeIconUrl!,
+                    width: 32,
+                    height: 32,
+                    errorWidget: (context, url, error) => const Icon(Icons.store, size: 32),
+                  ),
+                ),
+              Expanded(
+                child: Text(
+                  offer.displayStoreName,
+                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Text('Preço Atual: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                offer.estimatedFinalPrice == '0.0' || offer.estimatedFinalPrice == '0'
+                    ? 'GRÁTIS'
+                    : 'R\$ ${offer.estimatedFinalPrice}',
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Text('Menor Preço Histórico: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('R\$ ${offer.historicalLow}'),
+            ],
+          ),
+          if (offer.currentPrice == offer.historicalLow &&
+              offer.currentPrice != '0.0' &&
+              offer.currentPrice != '0') ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'MENOR PREÇO HISTÓRICO!',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+            ),
+          ],
+          if (offer.dealUrl != null) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => launchUrl(Uri.parse(offer.dealUrl!)),
+                child: const Text('Ver na Loja'),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 

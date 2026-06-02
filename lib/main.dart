@@ -15,18 +15,18 @@ void main() {
             ..fetchDeals(),
         ),
       ],
-      child: const GameDealTrackerApp(),
+      child: const GameModelTrackerApp(),
     ),
   );
 }
 
-class GameDealTrackerApp extends StatelessWidget {
-  const GameDealTrackerApp({super.key});
+class GameModelTrackerApp extends StatelessWidget {
+  const GameModelTrackerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'GameDeal Tracker',
+      title: 'GameModel Tracker',
       theme: ThemeData.dark(),
       home: const MainScreen(),
     );

@@ -1,75 +1,31 @@
-typedef GameAuditResponse = GameDeal;
+typedef GameAuditResponse = GameModel;
 
-class GameDeal {
-  final String id;
-  final String title;
+class GameOffer {
+  final String? storeName;
+  final String? storeIconUrl;
   final String currentPrice;
   final String historicalLow;
-  final String? originalPrice;
-  final String? platform;
-  final String? storeName;
+  final String estimatedFinalPrice;
   final String? dealUrl;
-  final bool isFree;
-  final bool isHistoricalLow;
-  final DateTime updatedAt;
-  final DateTime? promoStartDate;
-  final DateTime? promoEndDate;
-  final String? imageUrl;
 
-  GameDeal({
-    required this.id,
-    required this.title,
+  GameOffer({
+    this.storeName,
+    this.storeIconUrl,
     required this.currentPrice,
     required this.historicalLow,
-    this.originalPrice,
-    this.platform,
-    this.storeName,
+    required this.estimatedFinalPrice,
     this.dealUrl,
-    required this.isFree,
-    required this.isHistoricalLow,
-    required this.updatedAt,
-    this.promoStartDate,
-    this.promoEndDate,
-    this.imageUrl,
   });
 
-  factory GameDeal.fromJson(Map<String, dynamic> json) {
-    return GameDeal(
-      id: json['id']?.toString() ?? '', // Usa vazio se id faltar
-      title: json['title'] as String,
+  factory GameOffer.fromJson(Map<String, dynamic> json) {
+    return GameOffer(
+      storeName: json['store_name']?.toString(),
+      storeIconUrl: json['store_icon_url']?.toString(),
       currentPrice: json['current_price']?.toString() ?? '0.0',
       historicalLow: json['historical_low']?.toString() ?? '0.0',
-      originalPrice: json['original_price']?.toString(), // Permanece null se faltar
-      platform: json['platform'] as String?,
-      storeName: json['store_name']?.toString(),
+      estimatedFinalPrice: json['estimated_final_price']?.toString() ?? '0.0',
       dealUrl: json['deal_url']?.toString(),
-      isFree: json['is_free'] as bool? ?? false, // Default false se faltar
-      isHistoricalLow: json['is_historical_low'] as bool? ?? false,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'] as String)
-          : DateTime.now(), // Usa data atual se faltar
-      promoStartDate: json['promo_start_date'] != null
-          ? DateTime.tryParse(json['promo_start_date'].toString())
-          : null,
-      promoEndDate: json['promo_end_date'] != null
-          ? DateTime.tryParse(json['promo_end_date'].toString())
-          : null,
-      imageUrl: json['image_url']?.toString(),
     );
-  }
-
-  int? get discountPercentage {
-    if (isFree) return 100;
-
-    final current = double.tryParse(currentPrice);
-    final original = double.tryParse(originalPrice ?? '');
-
-    if (current != null && original != null && original > 0) {
-      final discount = ((original - current) / original) * 100;
-      return discount > 0 ? discount.round() : null;
-    }
-
-    return null;
   }
 
   String get displayStoreName {
@@ -79,5 +35,50 @@ class GameDeal {
       return "Ver Oferta";
     }
     return storeName!;
+  }
+}
+
+class GameModel {
+  final String id;
+  final String title;
+  final String? platform;
+  final DateTime updatedAt;
+  final DateTime? promoStartDate;
+  final DateTime? promoEndDate;
+  final String? imageUrl;
+  final List<GameOffer> offers;
+
+  GameModel({
+    required this.id,
+    required this.title,
+    this.platform,
+    required this.updatedAt,
+    this.promoStartDate,
+    this.promoEndDate,
+    this.imageUrl,
+    required this.offers,
+  });
+
+  factory GameModel.fromJson(Map<String, dynamic> json) {
+    var offersList = json['offers'] as List? ?? [];
+    List<GameOffer> parsedOffers =
+        offersList.map((i) => GameOffer.fromJson(i)).toList();
+
+    return GameModel(
+      id: json['id']?.toString() ?? '',
+      title: json['title'] as String,
+      platform: json['platform'] as String?,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : DateTime.now(),
+      promoStartDate: json['promo_start_date'] != null
+          ? DateTime.tryParse(json['promo_start_date'].toString())
+          : null,
+      promoEndDate: json['promo_end_date'] != null
+          ? DateTime.tryParse(json['promo_end_date'].toString())
+          : null,
+      imageUrl: json['image_url']?.toString(),
+      offers: parsedOffers,
+    );
   }
 }

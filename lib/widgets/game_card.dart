@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../models/game_deal.dart';
 
 class GameCard extends StatelessWidget {
-  final GameDeal game;
+  final GameModel game;
 
   const GameCard({
     super.key,
@@ -58,123 +58,102 @@ class GameCard extends StatelessWidget {
                 child: const Icon(Icons.image_not_supported, size: 50),
               ),
             const SizedBox(height: 12),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        game.title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      if (game.platform != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            game.platform!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.blueAccent,
-                            ),
-                          ),
-                        ),
-                      if (game.promoEndDate != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            'Termina em: ${_formatDayMonth(game.promoEndDate!)}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.orangeAccent,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                      else if (game.promoStartDate != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            'Começou em: ${_formatDayMonth(game.promoStartDate!)}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                if (game.isFree)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: const Text(
-                      'GRÁTIS',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  )
-                else
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        'R\$ ${game.currentPrice}',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.greenAccent,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      if (game.discountPercentage != null)
-                        Text(
-                          '-${game.discountPercentage}%',
-                          style: const TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                    ],
-                  ),
-              ],
+            Text(
+              game.title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    'Atualizado em: ${_formatDate(game.updatedAt)}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.grey,
-                    ),
+            if (game.platform != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  game.platform!,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.blueAccent,
                   ),
                 ),
-                if (game.dealUrl != null) ...[
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: ElevatedButton(
-                      onPressed: () => launchUrl(Uri.parse(game.dealUrl!)),
-                      child: Text(
-                        game.displayStoreName,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
+              ),
+            if (game.promoEndDate != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Termina em: ${_formatDayMonth(game.promoEndDate!)}',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.orangeAccent,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ],
+                ),
+              )
+            else if (game.promoStartDate != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Começou em: ${_formatDayMonth(game.promoStartDate!)}',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            const Divider(height: 24),
+            ...game.offers.map((offer) => _buildOfferRow(context, offer)),
+            const SizedBox(height: 8),
+            Text(
+              'Atualizado em: ${_formatDate(game.updatedAt)}',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.grey,
+              ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildOfferRow(BuildContext context, GameOffer offer) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        children: [
+          if (offer.storeIconUrl != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: CachedNetworkImage(
+                imageUrl: offer.storeIconUrl!,
+                width: 24,
+                height: 24,
+                errorWidget: (context, url, error) => const Icon(Icons.store, size: 24),
+              ),
+            ),
+          Expanded(
+            child: Text(
+              offer.displayStoreName,
+              style: theme.textTheme.bodyMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            offer.estimatedFinalPrice == '0.0' || offer.estimatedFinalPrice == '0'
+                ? 'GRÁTIS'
+                : 'R\$ ${offer.estimatedFinalPrice}',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.greenAccent,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 12),
+          if (offer.dealUrl != null)
+            ElevatedButton(
+              onPressed: () => launchUrl(Uri.parse(offer.dealUrl!)),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                minimumSize: const Size(60, 30),
+              ),
+              child: const Text('Ver', style: TextStyle(fontSize: 12)),
+            ),
+        ],
       ),
     );
   }
