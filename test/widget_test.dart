@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:gamedeal_tracker/main.dart';
@@ -12,7 +11,7 @@ void main() {
         providers: [
           ChangeNotifierProvider(create: (_) => GameProvider()),
         ],
-        child: const GameDealTrackerApp(),
+        child: const GameModelTrackerApp(),
       ),
     );
 

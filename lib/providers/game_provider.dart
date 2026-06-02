@@ -5,8 +5,8 @@ import '../services/api_service.dart';
 class GameProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
 
-  List<GameDeal> _giveaways = [];
-  List<GameDeal> _deals = [];
+  List<GameModel> _giveaways = [];
+  List<GameModel> _deals = [];
   bool _isLoadingGiveaways = false;
   bool _isLoadingDeals = false;
 
@@ -14,8 +14,8 @@ class GameProvider extends ChangeNotifier {
   List<GameAuditResponse> _games = [];
   bool _isAuditing = false;
 
-  List<GameDeal> get giveaways => _giveaways;
-  List<GameDeal> get deals => _deals;
+  List<GameModel> get giveaways => _giveaways;
+  List<GameModel> get deals => _deals;
   bool get isLoadingGiveaways => _isLoadingGiveaways;
   bool get isLoadingDeals => _isLoadingDeals;
 

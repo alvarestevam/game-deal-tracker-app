@@ -34,57 +34,70 @@ class GameCardSkeleton extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 20,
-                          width: double.infinity,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 14,
-                          width: 100,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    height: 24,
-                    width: 60,
-                    color: Colors.white,
-                  ),
-                ],
+              Container(
+                height: 20,
+                width: 200,
+                color: Colors.white,
               ),
+              const SizedBox(height: 8),
+              Container(
+                height: 14,
+                width: 100,
+                color: Colors.white,
+              ),
+              const Divider(height: 24),
+              // Simula duas ofertas
+              _buildOfferSkeleton(),
+              const SizedBox(height: 8),
+              _buildOfferSkeleton(),
               const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: 14,
-                    width: 150,
-                    color: Colors.white,
-                  ),
-                  Container(
-                    height: 36,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ],
+              Container(
+                height: 14,
+                width: 150,
+                color: Colors.white,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildOfferSkeleton() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            height: 16,
+            width: 100,
+            color: Colors.white,
+          ),
+          const Spacer(),
+          Container(
+            height: 16,
+            width: 60,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 12),
+          Container(
+            height: 30,
+            width: 60,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ],
       ),
     );
   }

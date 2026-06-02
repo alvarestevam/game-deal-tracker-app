@@ -13,12 +13,12 @@ class ApiService {
     },
   ));
 
-  Future<List<GameDeal>> getGiveaways() async {
+  Future<List<GameModel>> getGiveaways() async {
     try {
       final response = await _dio.get('/api/v1/giveaways');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((json) => GameDeal.fromJson(json)).toList();
+        return data.map((json) => GameModel.fromJson(json)).toList();
       }
       return [];
     } on DioException catch (e) {
@@ -30,12 +30,12 @@ class ApiService {
     }
   }
 
-  Future<List<GameDeal>> getDeals() async {
+  Future<List<GameModel>> getDeals() async {
     try {
       final response = await _dio.get('/api/v1/deals');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((json) => GameDeal.fromJson(json)).toList();
+        return data.map((json) => GameModel.fromJson(json)).toList();
       }
       return [];
     } on DioException catch (e) {
