@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 import '../providers/game_provider.dart';
 import '../models/game_deal.dart';
 import '../widgets/game_card_skeleton.dart';
@@ -119,15 +120,19 @@ class AuditResultView extends StatelessWidget {
                             height: 200,
                             width: double.infinity,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(
-                              height: 200,
-                              color: Colors.grey[800],
-                              child: const Center(
-                                child: CircularProgressIndicator(),
+                            httpHeaders: const {'User-Agent': 'GamesInDealApp/1.0'},
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey[800]!,
+                              highlightColor: Colors.grey[600]!,
+                              child: Container(
+                                height: 200,
+                                width: double.infinity,
+                                color: Colors.white,
                               ),
                             ),
                             errorWidget: (context, url, error) => Container(
                               height: 200,
+                              width: double.infinity,
                               color: Colors.grey[800],
                               child: const Icon(Icons.broken_image, size: 50),
                             ),
@@ -189,7 +194,14 @@ class AuditResultView extends StatelessWidget {
                     imageUrl: offer.storeIconUrl!,
                     width: 32,
                     height: 32,
-                    errorWidget: (context, url, error) => const Icon(Icons.store, size: 32),
+                    httpHeaders: const {'User-Agent': 'GamesInDealApp/1.0'},
+                    errorWidget: (context, url, error) => CircleAvatar(
+                      radius: 16,
+                      child: Text(
+                        offer.displayStoreName.isNotEmpty ? offer.displayStoreName[0] : '?',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
                   ),
                 ),
               Expanded(

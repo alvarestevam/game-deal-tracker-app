@@ -7,10 +7,9 @@ class GameCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
-    final baseColor = isDark ? Colors.grey[850]! : Colors.grey[300]!;
-    final highlightColor = isDark ? Colors.grey[800]! : Colors.grey[100]!;
+    final baseColor = Colors.grey[800]!;
+    final highlightColor = Colors.grey[600]!;
 
     return Card(
       elevation: 2,
