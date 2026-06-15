@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/game_deal.dart';
+import '../core/constants.dart';
 
 class GameCard extends StatelessWidget {
   final GameModel game;
@@ -34,7 +35,7 @@ class GameCard extends StatelessWidget {
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  httpHeaders: const {'User-Agent': 'GamesInDealApp/1.0'},
+                  httpHeaders: const {'User-Agent': browserUserAgent},
                   placeholder: (context, url) => Shimmer.fromColors(
                     baseColor: Colors.grey[800]!,
                     highlightColor: Colors.grey[600]!,
@@ -128,7 +129,7 @@ class GameCard extends StatelessWidget {
                 imageUrl: offer.storeIconUrl!,
                 width: 24,
                 height: 24,
-                httpHeaders: const {'User-Agent': 'GamesInDealApp/1.0'},
+                httpHeaders: const {'User-Agent': browserUserAgent},
                 errorWidget: (context, url, error) => CircleAvatar(
                   radius: 12,
                   child: Text(
