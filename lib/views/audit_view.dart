@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import '../providers/game_provider.dart';
 import '../models/game_deal.dart';
 import '../widgets/game_card_skeleton.dart';
+import '../core/constants.dart';
 
 class AuditView extends StatefulWidget {
   const AuditView({super.key});
@@ -120,7 +121,7 @@ class AuditResultView extends StatelessWidget {
                             height: 200,
                             width: double.infinity,
                             fit: BoxFit.cover,
-                            httpHeaders: const {'User-Agent': 'GamesInDealApp/1.0'},
+                            httpHeaders: const {'User-Agent': browserUserAgent},
                             placeholder: (context, url) => Shimmer.fromColors(
                               baseColor: Colors.grey[800]!,
                               highlightColor: Colors.grey[600]!,
@@ -194,7 +195,7 @@ class AuditResultView extends StatelessWidget {
                     imageUrl: offer.storeIconUrl!,
                     width: 32,
                     height: 32,
-                    httpHeaders: const {'User-Agent': 'GamesInDealApp/1.0'},
+                    httpHeaders: const {'User-Agent': browserUserAgent},
                     errorWidget: (context, url, error) => CircleAvatar(
                       radius: 16,
                       child: Text(
