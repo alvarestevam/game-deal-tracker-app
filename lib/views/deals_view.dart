@@ -36,8 +36,13 @@ class DealsView extends StatelessWidget {
           final topRecentDeals = recentDeals.take(10).toList();
 
           return RefreshIndicator(
-            onRefresh: () => provider.fetchDeals(),
-            child: sortedDeals.isEmpty
+            onRefresh: () async {
+              await Future.wait([
+                provider.fetchDeals(),
+                provider.fetchBestDeals(),
+              ]);
+            },
+            child: sortedDeals.isEmpty && provider.bestDeals.isEmpty
                 ? ListView(
                     children: const [
                       SizedBox(height: 100),
@@ -54,6 +59,32 @@ class DealsView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (provider.bestDeals.isNotEmpty) ...[
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                            child: Text(
+                              'Melhores Ofertas 🔥',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 350,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              itemCount: provider.bestDeals.length,
+                              itemBuilder: (context, index) {
+                                return SizedBox(
+                                  width: 340,
+                                  child: GameCard(game: provider.bestDeals[index]),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                         const Padding(
                           padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                           child: Text(

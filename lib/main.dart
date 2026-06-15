@@ -12,7 +12,8 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => GameProvider()
             ..fetchGiveaways()
-            ..fetchDeals(),
+            ..fetchDeals()
+            ..fetchBestDeals(),
         ),
       ],
       child: const GameModelTrackerApp(),
