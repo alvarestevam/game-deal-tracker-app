@@ -30,6 +30,23 @@ class ApiService {
     }
   }
 
+  Future<List<GameModel>> getBestDeals() async {
+    try {
+      final response = await _dio.get('/api/v1/deals/best');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        return data.map((json) => GameModel.fromJson(json)).toList();
+      }
+      return [];
+    } on DioException catch (e) {
+      print('Erro ao buscar melhores deals: ${e.message}');
+      return [];
+    } catch (e) {
+      print('Erro inesperado: $e');
+      return [];
+    }
+  }
+
   Future<List<GameModel>> getDeals() async {
     try {
       final response = await _dio.get('/api/v1/deals');

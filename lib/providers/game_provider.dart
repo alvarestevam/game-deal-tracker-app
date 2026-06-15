@@ -7,8 +7,10 @@ class GameProvider extends ChangeNotifier {
 
   List<GameModel> _giveaways = [];
   List<GameModel> _deals = [];
+  List<GameModel> _bestDeals = [];
   bool _isLoadingGiveaways = false;
   bool _isLoadingDeals = false;
+  bool _isLoadingBestDeals = false;
 
   // Auditoria
   List<GameAuditResponse> _games = [];
@@ -16,8 +18,10 @@ class GameProvider extends ChangeNotifier {
 
   List<GameModel> get giveaways => _giveaways;
   List<GameModel> get deals => _deals;
+  List<GameModel> get bestDeals => _bestDeals;
   bool get isLoadingGiveaways => _isLoadingGiveaways;
   bool get isLoadingDeals => _isLoadingDeals;
+  bool get isLoadingBestDeals => _isLoadingBestDeals;
 
   List<GameAuditResponse> get games => _games;
   bool get isAuditing => _isAuditing;
@@ -30,6 +34,18 @@ class GameProvider extends ChangeNotifier {
       _giveaways = await _apiService.getGiveaways();
     } finally {
       _isLoadingGiveaways = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchBestDeals() async {
+    _isLoadingBestDeals = true;
+    notifyListeners();
+
+    try {
+      _bestDeals = await _apiService.getBestDeals();
+    } finally {
+      _isLoadingBestDeals = false;
       notifyListeners();
     }
   }
